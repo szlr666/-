@@ -274,7 +274,6 @@ downloadPngBtn.addEventListener('click', () => {
 
     const dataUrl = currentQRCanvas.toDataURL('image/png');
     downloadFile(dataUrl, 'qrcode.png');
-    showToast('PNG格式下载成功！', 'success');
 });
 
 // 下载为 SVG
@@ -286,7 +285,6 @@ downloadSvgBtn.addEventListener('click', () => {
 
     const dataUrl = currentQRCanvas.toDataURL('image/png');
     downloadFile(dataUrl, 'qrcode-svg.png');
-    showToast('SVG格式需要额外库支持，已为您生成PNG格式', 'info');
 });
 
 // 下载为 JPG
@@ -311,7 +309,6 @@ downloadJpgBtn.addEventListener('click', () => {
 
     const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.95);
     downloadFile(dataUrl, 'qrcode.jpg');
-    showToast('JPG格式下载成功！', 'success');
 });
 
 // 下载为 PDF
@@ -356,8 +353,6 @@ downloadPdfBtn.addEventListener('click', () => {
     // 转换为图片并下载 (作为PDF替代方案，生成高分辨率PNG)
     const dataUrl = pdfCanvas.toDataURL('image/png');
     downloadFile(dataUrl, 'qrcode-a4.png');
-    
-    showToast('已生成A4尺寸高清PNG（可直接打印或转PDF）', 'success');
 });
 
 // 历史记录管理
@@ -558,13 +553,29 @@ function downloadFile(dataUrl, filename) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    // 显示下载成功提示，并说明保存位置
+    const downloadPath = navigator.platform.includes('Win') ? 'C:\\Users\\您的用户名\\Downloads\\' : '~/Downloads/';
+    showToast(`✅ 文件已保存：${filename}\n📁 位置：下载文件夹`, 'success');
 }
 
-// 回车键生成二维码
-textInput.addEventListener('keypress', (e) => {
+// 回车键生成二维码（支持 Ctrl+Enter 或 Cmd+Enter）
+textInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault(); // 阻止默认换行行为
         generateBtn.click();
     }
+});
+
+// 支持粘贴功能（确保没有被阻止）
+textInput.addEventListener('paste', (e) => {
+    // 不阻止默认行为，只是显示提示
+    setTimeout(() => {
+        const length = textInput.value.length;
+        if (length > 0) {
+            showToast(`已粘贴 ${length} 个字符`, 'info');
+        }
+    }, 10);
 });
 
 // 历史记录持久化
