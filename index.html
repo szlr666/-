@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="专业的二维码生成器，支持自定义颜色、Logo嵌入、多种格式下载，完全免费，离线可用">
+    <meta name="keywords" content="二维码生成器,QR码,Logo二维码,自定义二维码,免费二维码">
+    <meta name="author" content="QR Code Generator">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="二维码生成器">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="专业二维码生成器 - 支持Logo嵌入">
+    <meta property="og:description" content="免费在线二维码生成工具，支持自定义颜色、Logo嵌入、多种格式下载">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
+    
+    <title>🎨 专业二维码生成器 - 支持Logo嵌入 | 免费在线工具</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 专业二维码生成器</h1>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="basic">基础设置</button>
+            <button class="tab-btn" data-tab="advanced">高级美化</button>
+            <button class="tab-btn" data-tab="logo">Logo嵌入</button>
+        </div>
+
+        <div class="input-section">
+            <!-- 基础设置标签页 -->
+            <div class="tab-content active" id="basic-tab">
+                <textarea 
+                    id="textInput" 
+                    placeholder="请输入要生成二维码的文字内容...&#10;提示：按 Ctrl+Enter 快速生成" 
+                    rows="4"
+                ></textarea>
+                
+                <div class="options-grid">
+                    <div class="option-item">
+                        <label for="qrSize">📏 尺寸大小</label>
+                        <select id="qrSize">
+                            <option value="256">小 (256px)</option>
+                            <option value="512" selected>中 (512px)</option>
+                            <option value="1024">大 (1024px)</option>
+                            <option value="2048">超大 (2048px)</option>
+                        </select>
+                    </div>
+
+                    <div class="option-item">
+                        <label for="errorLevel">🛡️ 纠错级别</label>
+                        <select id="errorLevel">
+                            <option value="L">低 (7%)</option>
+                            <option value="M">中 (15%)</option>
+                            <option value="Q">高 (25%)</option>
+                            <option value="H" selected>最高 (30%)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 高级美化标签页 -->
+            <div class="tab-content" id="advanced-tab">
+                <div class="options-grid">
+                    <div class="option-item">
+                        <label for="fgColor">🎨 前景色</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="fgColor" value="#000000">
+                            <input type="text" id="fgColorText" value="#000000" maxlength="7">
+                        </div>
+                    </div>
+
+                    <div class="option-item">
+                        <label for="bgColor">🖌️ 背景色</label>
+                        <div class="color-picker-group">
+                            <input type="color" id="bgColor" value="#FFFFFF">
+                            <input type="text" id="bgColorText" value="#FFFFFF" maxlength="7">
+                        </div>
+                    </div>
+
+                    <div class="option-item">
+                        <label for="borderSize">📐 边框大小</label>
+                        <input type="range" id="borderSize" min="0" max="20" value="4" step="1">
+                        <span id="borderSizeValue">4</span>
+                    </div>
+
+                    <div class="option-item">
+                        <label for="borderRadius">⭕ 圆角半径</label>
+                        <input type="range" id="borderRadius" min="0" max="50" value="10" step="1">
+                        <span id="borderRadiusValue">10px</span>
+                    </div>
+                </div>
+
+                <div class="preset-colors">
+                    <label>🎭 快速配色：</label>
+                    <div class="color-presets">
+                        <button class="preset-btn" data-fg="#000000" data-bg="#FFFFFF" style="background: linear-gradient(135deg, #000 50%, #FFF 50%)">经典</button>
+                        <button class="preset-btn" data-fg="#1e3a8a" data-bg="#dbeafe" style="background: linear-gradient(135deg, #1e3a8a 50%, #dbeafe 50%)">蓝调</button>
+                        <button class="preset-btn" data-fg="#991b1b" data-bg="#fee2e2" style="background: linear-gradient(135deg, #991b1b 50%, #fee2e2 50%)">红韵</button>
+                        <button class="preset-btn" data-fg="#14532d" data-bg="#dcfce7" style="background: linear-gradient(135deg, #14532d 50%, #dcfce7 50%)">绿意</button>
+                        <button class="preset-btn" data-fg="#6b21a8" data-bg="#f3e8ff" style="background: linear-gradient(135deg, #6b21a8 50%, #f3e8ff 50%)">紫韵</button>
+                        <button class="preset-btn" data-fg="#ea580c" data-bg="#ffedd5" style="background: linear-gradient(135deg, #ea580c 50%, #ffedd5 50%)">橙光</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logo嵌入标签页 -->
+            <div class="tab-content" id="logo-tab">
+                <div class="logo-upload-section">
+                    <label class="upload-label">
+                        <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+                        <div class="upload-box">
+                            <span class="upload-icon">📤</span>
+                            <span>点击上传Logo图片</span>
+                            <small>支持 PNG, JPG, SVG 格式</small>
+                        </div>
+                    </label>
+
+                    <div id="logoPreview" style="display: none;">
+                        <img id="logoPreviewImg" src="" alt="Logo预览">
+                        <button id="removeLogo" class="btn-remove">❌ 移除</button>
+                    </div>
+                </div>
+
+                <div class="option-item">
+                    <label for="logoSize">📏 Logo大小 (占比)</label>
+                    <input type="range" id="logoSize" min="10" max="30" value="20" step="1">
+                    <span id="logoSizeValue">20%</span>
+                </div>
+
+                <div class="preset-logos">
+                    <label>🎯 快速图标：</label>
+                    <div class="logo-presets">
+                        <button class="logo-preset-btn" data-emoji="💼">💼</button>
+                        <button class="logo-preset-btn" data-emoji="🏢">🏢</button>
+                        <button class="logo-preset-btn" data-emoji="🎯">🎯</button>
+                        <button class="logo-preset-btn" data-emoji="⭐">⭐</button>
+                        <button class="logo-preset-btn" data-emoji="❤️">❤️</button>
+                        <button class="logo-preset-btn" data-emoji="🔥">🔥</button>
+                        <button class="logo-preset-btn" data-emoji="✨">✨</button>
+                        <button class="logo-preset-btn" data-emoji="🌟">🌟</button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="generateBtn" class="btn-generate">🎨 生成精美二维码</button>
+        </div>
+
+        <div class="qrcode-section" id="qrcodeSection" style="display: none;">
+            <h2>✨ 生成的二维码</h2>
+            <div id="qrcodeContainer"></div>
+            
+            <div class="download-section">
+                <h3>💾 下载选项</h3>
+                <div class="download-buttons">
+                    <button id="downloadPng" class="btn-download">
+                        <span>📥 PNG</span>
+                    </button>
+                    <button id="downloadJpg" class="btn-download">
+                        <span>📥 JPG</span>
+                    </button>
+                    <button id="downloadSvg" class="btn-download">
+                        <span>📥 SVG</span>
+                    </button>
+                    <button id="downloadPdf" class="btn-download">
+                        <span>📄 PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <h3>🕒 最近生成</h3>
+                <div id="historyContainer" class="history-grid"></div>
+                <button id="clearHistory" class="btn-clear">清空历史</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="qrcodegen.js"></script>
+    <script src="app.js"></script>
+    
+    <!-- 错误监控 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('全局错误:', e.error);
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('未处理的Promise拒绝:', e.reason);
+        });
+    </script>
+</body>
+</html>
