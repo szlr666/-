@@ -238,8 +238,13 @@ generateBtn.addEventListener('click', () => {
         qrcodeContainer.appendChild(canvas);
         currentQRCanvas = canvas;
         
-        // 应用圆角
-        canvas.style.borderRadius = borderRadius + 'px';
+        // 应用圆角（确保生效）
+        if (borderRadius > 0) {
+            canvas.style.borderRadius = borderRadius + 'px';
+            canvas.style.overflow = 'hidden';
+        } else {
+            canvas.style.borderRadius = '0';
+        }
         
         // 添加到历史记录
         addToHistory(canvas, text);
@@ -250,7 +255,11 @@ generateBtn.addEventListener('click', () => {
         generateBtn.innerHTML = '🎨 生成精美二维码';
         
         qrcodeSection.style.display = 'block';
-        qrcodeSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // 优化滚动：确保移动端和PC端都能看到结果
+        setTimeout(() => {
+            qrcodeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
         
         // 添加成功动画
         qrcodeContainer.classList.add('success-flash');
@@ -265,6 +274,21 @@ generateBtn.addEventListener('click', () => {
     }
 });
 
+// 生成友好的文件名
+function generateFileName(ext) {
+    // 获取文本内容的前15个字符作为文件名
+    let prefix = 'qrcode';
+    if (currentQRText) {
+        // 清理文本，只保留字母数字中文
+        const cleanText = currentQRText.replace(/[^\w\u4e00-\u9fa5]/g, '_').substring(0, 15);
+        if (cleanText) {
+            prefix = cleanText;
+        }
+    }
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    return `${prefix}_${timestamp}.${ext}`;
+}
+
 // 下载为 PNG
 downloadPngBtn.addEventListener('click', () => {
     if (!currentQRCanvas) {
@@ -273,7 +297,8 @@ downloadPngBtn.addEventListener('click', () => {
     }
 
     const dataUrl = currentQRCanvas.toDataURL('image/png');
-    downloadFile(dataUrl, 'qrcode.png');
+    const filename = generateFileName('png');
+    downloadFile(dataUrl, filename);
 });
 
 // 下载为 SVG
@@ -284,7 +309,8 @@ downloadSvgBtn.addEventListener('click', () => {
     }
 
     const dataUrl = currentQRCanvas.toDataURL('image/png');
-    downloadFile(dataUrl, 'qrcode-svg.png');
+    const filename = generateFileName('svg.png');
+    downloadFile(dataUrl, filename);
 });
 
 // 下载为 JPG
@@ -308,7 +334,8 @@ downloadJpgBtn.addEventListener('click', () => {
     ctx.drawImage(currentQRCanvas, 0, 0);
 
     const dataUrl = tempCanvas.toDataURL('image/jpeg', 0.95);
-    downloadFile(dataUrl, 'qrcode.jpg');
+    const filename = generateFileName('jpg');
+    downloadFile(dataUrl, filename);
 });
 
 // 下载为 PDF
@@ -352,7 +379,8 @@ downloadPdfBtn.addEventListener('click', () => {
     
     // 转换为图片并下载 (作为PDF替代方案，生成高分辨率PNG)
     const dataUrl = pdfCanvas.toDataURL('image/png');
-    downloadFile(dataUrl, 'qrcode-a4.png');
+    const filename = generateFileName('a4.png');
+    downloadFile(dataUrl, filename);
 });
 
 // 历史记录管理
@@ -446,7 +474,11 @@ function renderHistory() {
             
             // 显示二维码区域
             qrcodeSection.style.display = 'block';
-            qrcodeSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // 优化滚动：确保移动端和PC端都能看到结果
+            setTimeout(() => {
+                qrcodeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         };
         
         historyContainer.appendChild(div);
@@ -458,9 +490,8 @@ clearHistoryBtn.addEventListener('click', () => {
     if (confirm('确定要清空所有历史记录吗？')) {
         qrHistory.length = 0;
         renderHistory();
+        saveHistoryToStorage();
         showToast('历史记录已清空', 'success');
-        saveHistoryToStorage();
-        saveHistoryToStorage();
     }
 });
 
@@ -516,9 +547,15 @@ textInput.parentNode.insertBefore(charCounter, textInput.nextSibling);
 textInput.addEventListener('input', debounce(() => {
     const length = textInput.value.length;
     charCounter.textContent = `已输入 ${length} 个字符`;
-    if (length > 500) {
+    if (length > 1000) {
+        charCounter.style.color = '#dc2626';
+        charCounter.textContent = `⚠️ 已输入 ${length} 个字符（超出建议长度，可能无法扫描）`;
+    } else if (length > 500) {
         charCounter.style.color = '#ef4444';
-        charCounter.textContent = `⚠️ 已输入 ${length} 个字符（内容过长可能影响扫描）`;
+        charCounter.textContent = `⚠️ 已输入 ${length} 个字符（内容较长可能影响扫描）`;
+    } else if (length > 200) {
+        charCounter.style.color = '#f59e0b';
+        charCounter.textContent = `已输入 ${length} 个字符`;
     } else {
         charCounter.style.color = '#999';
     }
@@ -545,6 +582,21 @@ window.addEventListener('load', () => {
     }
 });
 
+// 生成友好的文件名
+function generateFileName(ext) {
+    // 获取文本内容的前15个字符作为文件名
+    let prefix = 'qrcode';
+    if (currentQRText) {
+        // 清理文本，只保留字母数字中文
+        const cleanText = currentQRText.replace(/[^\w\u4e00-\u9fa5]/g, '_').substring(0, 15);
+        if (cleanText) {
+            prefix = cleanText;
+        }
+    }
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    return `${prefix}_${timestamp}.${ext}`;
+}
+
 // 通用下载函数
 function downloadFile(dataUrl, filename) {
     const link = document.createElement('a');
@@ -555,7 +607,6 @@ function downloadFile(dataUrl, filename) {
     document.body.removeChild(link);
     
     // 显示下载成功提示，并说明保存位置
-    const downloadPath = navigator.platform.includes('Win') ? 'C:\\Users\\您的用户名\\Downloads\\' : '~/Downloads/';
     showToast(`✅ 文件已保存：${filename}\n📁 位置：下载文件夹`, 'success');
 }
 
