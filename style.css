@@ -140,6 +140,7 @@ h3 {
     margin-bottom: 30px;
 }
 
+/* 文本输入框（始终显示） */
 #textInput {
     width: 100%;
     padding: 15px;
@@ -151,6 +152,7 @@ h3 {
     font-family: inherit;
     background: #f9fafb;
     line-height: 1.6;
+    margin-bottom: 20px;
 }
 
 #textInput:focus {

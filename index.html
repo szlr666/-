@@ -32,16 +32,17 @@
         </div>
 
         <div class="input-section">
+            <!-- 文本输入框（始终可见） -->
+            <textarea 
+                id="textInput" 
+                placeholder="请输入要生成二维码的文字内容...&#10;提示：按 Ctrl+Enter 快速生成"
+                rows="4"
+                spellcheck="false"
+                autocomplete="off"
+            ></textarea>
+            
             <!-- 基础设置标签页 -->
             <div class="tab-content active" id="basic-tab">
-                <textarea 
-                    id="textInput" 
-                    placeholder="请输入要生成二维码的文字内容...&#10;提示：按 Ctrl+Enter 快速生成"
-                    rows="4"
-                    spellcheck="false"
-                    autocomplete="off"
-                ></textarea>
-                
                 <div class="options-grid">
                     <div class="option-item">
                         <label for="qrSize">📏 尺寸大小</label>
