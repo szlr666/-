@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手机访问二维码</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 { margin-top: 0; color: #667eea; }
+        .url {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+            word-break: break-all;
+        }
+        #qrcode {
+            margin: 20px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        .steps {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .tip {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 手机端访问指南</h1>
+        
+        <p><strong>在手机浏览器输入以下地址：</strong></p>
+        <div class="url">http://192.168.1.19:8080</div>
+        
+        <p><strong>或扫描下方二维码：</strong></p>
+        <div id="qrcode"></div>
+        
+        <div class="steps">
+            <div class="step">
+                <strong>步骤1:</strong> 确保手机和电脑连接同一WiFi
+            </div>
+            <div class="step">
+                <strong>步骤2:</strong> 打开手机浏览器（Chrome/Safari）
+            </div>
+            <div class="step">
+                <strong>步骤3:</strong> 输入上方地址或扫码访问
+            </div>
+        </div>
+        
+        <div class="tip">
+            💡 <strong>提示:</strong> 确保电脑上的服务器正在运行（端口8080）
+        </div>
+    </div>
+    
+    <script src="qrcodegen.js"></script>
+    <script>
+        // 生成访问地址的二维码
+        const url = 'http://192.168.1.19:8080';
+        const qr = qrcodegen.QrCode.encodeText(url, qrcodegen.Ecc.HIGH);
+        
+        const canvas = document.createElement('canvas');
+        const size = 256;
+        const scale = Math.floor(size / qr.size);
+        const border = 4;
+        canvas.width = (qr.size + border * 2) * scale;
+        canvas.height = (qr.size + border * 2) * scale;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#000000';
+        for (let y = 0; y < qr.size; y++) {
+            for (let x = 0; x < qr.size; x++) {
+                if (qr.getModule(x, y)) {
+                    ctx.fillRect((x + border) * scale, (y + border) * scale, scale, scale);
+                }
+            }
+        }
+        
+        document.getElementById('qrcode').appendChild(canvas);
+    </script>
+</body>
+</html>

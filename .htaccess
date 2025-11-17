@@ -1,0 +1,58 @@
+# Apache 服务器配置文件
+
+# 启用压缩
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# 浏览器缓存
+<IfModule mod_expires.c>
+    ExpiresActive On
+    # HTML 不缓存（确保获取最新版本）
+    ExpiresByType text/html "access plus 0 seconds"
+    # CSS 和 JavaScript 缓存 1 周
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    # 图片缓存 1 个月
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# 启用 gzip 压缩
+<IfModule mod_gzip.c>
+    mod_gzip_on Yes
+    mod_gzip_dechunk Yes
+    mod_gzip_item_include file \.(html?|txt|css|js|php|pl)$
+    mod_gzip_item_include mime ^application/javascript$
+    mod_gzip_item_include mime ^text/.*
+    mod_gzip_item_exclude mime ^image/.*
+</IfModule>
+
+# 安全头
+<IfModule mod_headers.c>
+    # 防止点击劫持
+    Header set X-Frame-Options "SAMEORIGIN"
+    # XSS 保护
+    Header set X-XSS-Protection "1; mode=block"
+    # 防止 MIME 类型嗅探
+    Header set X-Content-Type-Options "nosniff"
+    # Referrer 策略
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# 自定义错误页面（可选）
+# ErrorDocument 404 /404.html
+# ErrorDocument 500 /500.html
+
+# UTF-8 编码
+AddDefaultCharset UTF-8
+
+# 禁止目录浏览
+Options -Indexes
+
+# 启用 FollowSymLinks
+Options +FollowSymLinks
+
+# 默认首页
+DirectoryIndex index.html index.htm
